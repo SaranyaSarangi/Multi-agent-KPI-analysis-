@@ -520,7 +520,7 @@ print(result)
 
 ## 📞 Support & Documentation
 
-- **GitHub**: [Repository Link]
+- **GitHub**: [Repository Link](https://github.com/SaranyaSarangi/Multi-agent-KPI-analysis-)
 - **Documentation**: [Docs Site]
 - **API Reference**: [API Docs]
 - **Examples**: See `/examples` directory
