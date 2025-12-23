@@ -1,6 +1,5 @@
 """
 KPI Multi-Agent Anomaly Detection Platform - Streamlit Frontend
-
 """
 
 import streamlit as st
@@ -10,11 +9,13 @@ import plotly.express as px
 from datetime import datetime
 import json
 import time
+from agents import RootAgent
+from google import genai
 
-# Import your backend (adjust path as needed)
-# For demo purposes, we'll create a simplified version
-# In production, import from your actual backend:
-# from your_backend_module import RootAgent
+# Initialize agent
+genai.configure(api_key="KPI_Analyzer_API")
+agent = RootAgent()
+# from backend import RootAgent
 
 # ============================================================================
 # PAGE CONFIG
@@ -159,105 +160,25 @@ def create_sample_data():
 2025-01-14,103,5150,52,2.0"""
 
 
-def simulate_analysis(csv_content, method, sensitivity):
-    """Simulate backend analysis (replace with actual RootAgent call)"""
+# Replace simulate_analysis with:
+def real_analysis(csv_content, method, sensitivity):
+    """Call actual RootAgent"""
+    result = agent.analyze_kpis(
+        csv_content=csv_content,
+        method=method,
+        sensitivity=sensitivity
+    )
     
-    # Simulate processing time
-    progress_bar = st.progress(0)
-    status_text = st.empty()
+    # Parse the natural language output into structured format
+    # You might need to modify your backend to return structured JSON
+    # instead of just a string
     
-    status_text.text("🔄 Ingesting data...")
-    time.sleep(0.5)
-    progress_bar.progress(25)
-    
-    status_text.text("🔍 Running anomaly detection...")
-    time.sleep(1)
-    progress_bar.progress(50)
-    
-    status_text.text("🌐 Searching for context...")
-    time.sleep(0.8)
-    progress_bar.progress(75)
-    
-    status_text.text("📊 Generating report...")
-    time.sleep(0.5)
-    progress_bar.progress(100)
-    
-    status_text.empty()
-    progress_bar.empty()
-    
-    # Simulated results (replace with actual agent.analyze_kpis() call)
     return {
-        "session_id": f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
-        "summary": {
-            "total_anomalies": 7,
-            "critical_count": 2,
-            "high_count": 2,
-            "medium_count": 2,
-            "low_count": 1,
-            "metrics_analyzed": 4
-        },
-        "anomalies": {
-            "Sales": [
-                {"index": 3, "value": 300, "deviation_pct": 191.2, "severity": "high"},
-                {"index": 9, "value": 500, "deviation_pct": 386.5, "severity": "critical"}
-            ],
-            "Revenue": [
-                {"index": 3, "value": 15000, "deviation_pct": 191.2, "severity": "high"},
-                {"index": 9, "value": 25000, "deviation_pct": 386.5, "severity": "critical"}
-            ],
-            "Customer_Count": [
-                {"index": 3, "value": 150, "deviation_pct": 191.2, "severity": "medium"},
-                {"index": 9, "value": 250, "deviation_pct": 386.5, "severity": "medium"}
-            ]
-        },
-        "trends": {
-            "Sales": "increasing",
-            "Revenue": "increasing",
-            "Customer_Count": "stable",
-            "Conversion_Rate": "stable"
-        },
-        "correlations": {
-            "Sales": {"Revenue": 0.98, "Customer_Count": 0.95},
-            "Revenue": {"Sales": 0.98}
-        },
-        "report": """**EXECUTIVE SUMMARY**
-
-Analysis of 14 days across 4 KPI metrics revealed 7 anomalies, including 2 critical alerts requiring immediate attention.
-
-**KEY FINDINGS**
-- **Sales**: Detected spike of 500 (+386% above baseline) on Day 10 - CRITICAL
-- **Revenue**: Correlated spike of 25,000 (+386%) detected - CRITICAL  
-- **Customer Count**: Proportional increase detected (250 customers)
-- **Trend Analysis**: Sales showing strong increasing trend (+15% week-over-week)
-- **Correlation**: Sales and Revenue highly correlated (0.98) - validates data integrity
-
-**RISK ASSESSMENT**
-
-🔴 **HIGH RISK**: Sales and Revenue anomalies require immediate investigation
-- Spike magnitude: 4x normal baseline
-- Sudden onset: No gradual buildup
-- Action needed: Verify data accuracy, check for system errors or genuine business event
-
-🟡 **MEDIUM RISK**: Customer count deviation within acceptable correlation range
-- Proportional to sales increase
-- Suggests legitimate business activity rather than data error
-
-**RECOMMENDED ACTIONS**
-
-1. **Immediate (0-24h)**: Investigate Day 10 spike - verify data entry, check for promotional campaigns, review transaction logs
-2. **Short-term (1-7d)**: Monitor Days 11-14 for pattern continuation vs. one-time anomaly
-3. **Analysis**: Compare against marketing calendar - was there a campaign launch?
-4. **System Check**: Review data pipeline for potential double-counting or duplicate entries
-5. **Threshold Update**: If spike is legitimate, update baseline expectations for future campaigns
-
-**EXTERNAL CONTEXT**
-
-Search results indicate potential promotional campaign or seasonal event during this period. Spike may be expected business behavior rather than anomaly.
-
-**CONFIDENCE LEVEL**: 95% (Ensemble method with 3/3 algorithm agreement)
-"""
+        "session_id": result.get("session_id"),
+        "summary": {...},  # Extract from result
+        "anomalies": {...},
+        "report": result
     }
-
 
 def plot_time_series(df, anomalies_dict):
     """Create interactive time series plot with anomalies highlighted"""
@@ -307,7 +228,6 @@ def plot_time_series(df, anomalies_dict):
     )
     
     return fig
-
 
 def plot_anomaly_distribution(summary):
     """Create pie chart of anomaly severity distribution"""
