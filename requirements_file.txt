@@ -2,6 +2,11 @@
 google-generativeai>=0.3.0
 google-adk>=0.1.0
 
+# Core Streamlit Frontend
+streamlit==1.31.0
+pandas==2.1.4
+plotly==5.18.0
+
 # Data science
 pandas>=2.0.0
 numpy>=1.24.0
