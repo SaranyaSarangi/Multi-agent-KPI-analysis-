@@ -12,11 +12,20 @@ import time
 from agents import RootAgent
 from google import genai
 
+api_key = st.secrets["KPI_Analyzer_API"]
 # Initialize agent
-genai.configure(api_key="KPI_Analyzer_API")
-agent = RootAgent()
+genai.configure(api_key=api_key)
 # from backend import RootAgent
+agent = RootAgent()
 
+# Config values
+DEFAULT_MODEL = st.secrets["DEFAULT_MODEL"]
+DEFAULT_METHOD = st.secrets["DEFAULT_METHOD"]
+DEFAULT_SENSITIVITY = st.secrets["DEFAULT_SENSITIVITY"]
+DEFAULT_Z_THRESHOLD = st.secrets["DEFAULT_Z_THRESHOLD"]
+
+LOG_LEVEL = st.secrets["LOG_LEVEL"]
+LOG_FILE = st.secrets["LOG_FILE"]
 # ============================================================================
 # PAGE CONFIG
 # ============================================================================
